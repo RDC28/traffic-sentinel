@@ -540,9 +540,5 @@ if (themeToggle) {
 // Run default preset on load
 window.addEventListener('DOMContentLoaded', () => {
     renderAuditTable();
-    setTimeout(() => {
-        resizeCanvas();
-        currentBase64 = getBase64Image(cameraFeed);
-        runInference();
-    }, 500);
+    loadScenario(activeImageId);
 });
