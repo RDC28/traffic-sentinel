@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrafficSentinel VLM - Zero-Shot Evidence Locker</title>
+    <!-- Google Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script>
+        // Apply theme early to prevent flash of light mode
+        const savedTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+</head>
+<body>
+    <!-- Top Navigation Bar -->
+    <nav class="top-nav">
+        <div class="nav-brand">
+            <div class="brand-logo">
+                <span class="logo-text-main">TRAFFIC</span><span class="logo-text-sub">SENTINEL</span>
+            </div>
+            <div class="nav-badge">VLM v3.5 PRO</div>
+        </div>
+        <div class="nav-system-status">
+            <div class="status-indicator online"></div>
+            <span class="status-label">Active Node: JN-NCR-04</span>
+            <span class="status-separator">|</span>
+            <span id="live-time" class="nav-clock">16:35:11</span>
+            <span class="status-separator">|</span>
+            <button id="theme-toggle" class="theme-toggle-btn" title="Toggle Dark/Light Mode">
+                <span class="material-icons" id="theme-toggle-icon">dark_mode</span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Dashboard Container -->
+    <div class="dashboard-grid">
+        
+        <!-- Left Sidebar: Controls & Preloaded Gallery -->
+        <aside class="panel-left glass-card">
+            <div class="panel-header">
+                <span class="material-icons header-icon">photo_camera</span>
+                <div>
+                    <h2>Test Scenarios</h2>
+                    <p class="panel-subtitle">Select a preloaded camera feed</p>
+                </div>
+            </div>
+
+            <!-- Preloaded Test Image Gallery -->
+            <div class="test-suite-gallery">
+                <div class="gallery-card active" data-image-id="helmet_violation" data-prompt="Detect rider or passenger without helmet on motorcycle" data-src="images/helmet_violation.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/helmet_violation.png" alt="Helmet Violation">
+                        <span class="card-badge danger">Helmet Violation</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 1: Two-Wheeler</h3>
+                        <p>No safety helmet detected</p>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-image-id="triple_riding" data-prompt="Detect triple riding violation on motorcycle or scooter" data-src="images/triple_riding.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/triple_riding.png" alt="Triple Riding">
+                        <span class="card-badge danger">Triple Riding</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 2: Overcrowding</h3>
+                        <p>3 riders on a single scooter</p>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-image-id="red_light" data-prompt="Detect red light violation crossing stop line at intersection" data-src="images/red_light.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/red_light.png" alt="Red Light Crossing">
+                        <span class="card-badge danger">Red Light</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 3: Intersection</h3>
+                        <p>Car crossing active red light</p>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-image-id="illegal_parking" data-prompt="Detect car parked illegally on pedestrian footpath or sidewalk" data-src="images/illegal_parking.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/illegal_parking.png" alt="Illegal Parking">
+                        <span class="card-badge danger">Footpath Parking</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 4: Obstruction</h3>
+                        <p>Vehicle parked on sidewalk</p>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-image-id="wrong_side" data-prompt="Detect wrong way driving or wrong side driving vehicle" data-src="images/wrong_side.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/wrong_side.png" alt="Wrong-Side Driving">
+                        <span class="card-badge danger">Wrong-Way</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 5: Danger Flow</h3>
+                        <p>Driving against traffic direction</p>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-image-id="no_seatbelt" data-prompt="Detect driver front windshield view without seatbelt" data-src="images/no_seatbelt.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/no_seatbelt.png" alt="Seatbelt Violation">
+                        <span class="card-badge danger">Seatbelt Violation</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 6: Windshield</h3>
+                        <p>Driver seatbelt non-compliance</p>
+                    </div>
+                </div>
+
+                <div class="gallery-card" data-image-id="stop_line" data-prompt="Detect motorcycle or scooter stopped past the stop line" data-src="images/stop_line.png">
+                    <div class="card-thumb-container">
+                        <img class="card-thumb" src="images/stop_line.png" alt="Stop Line Violation">
+                        <span class="card-badge danger">Stop Line</span>
+                    </div>
+                    <div class="card-info">
+                        <h3>Scenario 7: Encroachment</h3>
+                        <p>Vehicle stopped past paint line</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Custom Upload Section -->
+            <div class="custom-upload-section">
+                <div class="upload-title">Or Upload Custom Feed</div>
+                <div class="upload-drag-area">
+                    <input type="file" id="image-upload" accept="image/*" class="file-input-hidden">
+                    <label for="image-upload" class="upload-label">
+                        <span class="material-icons upload-icon">upload_file</span>
+                        <span class="upload-text">Browse image from device...</span>
+                    </label>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Center Panel: Live Video Feed & Audit Queue -->
+        <main class="panel-center glass-card">
+            <div class="panel-header" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="material-icons header-icon pulse">visibility</span>
+                    <div>
+                        <h2>CCTV Analytics Monitor</h2>
+                        <p class="panel-subtitle" id="feed-location">Camera Location: JN-NCR-04-A1 (Pre-processing Active)</p>
+                    </div>
+                </div>
+                <!-- Preprocessing Toggles -->
+                <div class="preprocessing-controls">
+                    <button id="btn-orig-view" class="toggle-tab">Original</button>
+                    <button id="btn-proc-view" class="toggle-tab active">Enhanced AI</button>
+                </div>
+            </div>
+
+            <!-- CCTV Monitor Feed Container -->
+            <div class="video-container" id="img-container">
+                <img id="camera-feed" src="images/helmet_violation.png" alt="Traffic Camera Feed" crossorigin="anonymous">
+                <canvas id="canvas-overlay"></canvas>
+            </div>
+
+            <!-- Prompt Console Panel -->
+            <div class="prompt-console glass-card">
+                <div class="console-label-row">
+                    <label for="vlm-prompt">Zero-Shot AI Prompter</label>
+                    <span class="console-status">Model Ready: VLM-LLaVA-v3</span>
+                </div>
+                <div class="console-input-row">
+                    <textarea id="vlm-prompt" placeholder="Ask the AI model in plain language. (e.g., 'Check for riders without helmets' or 'Is there illegal sidewalk parking?')" rows="1"></textarea>
+                    <button id="btn-analyze" class="btn-glow-primary">Run Inference</button>
+                </div>
+            </div>
+
+            <!-- New Element: Human-in-the-Loop Judicial Audit Queue -->
+            <div class="audit-queue-panel">
+                <div class="audit-queue-header">
+                    <h3><span class="material-icons audit-title-icon">gavel</span> Judicial Review Audit Queue</h3>
+                    <div class="audit-stats">
+                        <span class="stat-badge">Pending: <strong id="audit-stat-pending" class="text-warning">7</strong></span>
+                        <span class="stat-badge">Approved: <strong id="audit-stat-approved" class="text-success">0</strong></span>
+                        <span class="stat-badge">Rejected: <strong id="audit-stat-rejected" class="text-danger">0</strong></span>
+                        <span class="stat-badge">AI Precision: <strong id="audit-stat-precision" class="text-accent">100%</strong></span>
+                    </div>
+                </div>
+                <div class="audit-table-wrapper">
+                    <table class="audit-table">
+                        <thead>
+                            <tr>
+                                <th>Case ID</th>
+                                <th>Camera Location</th>
+                                <th>Infraction Flagged</th>
+                                <th>AI Conf.</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="audit-queue-body">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Right Sidebar: Inference Results & Evidence Locking Certificate -->
+        <aside class="panel-right glass-card">
+            <div class="panel-header">
+                <span class="material-icons header-icon">assignment</span>
+                <div>
+                    <h2>Court Evidence Lock</h2>
+                    <p class="panel-subtitle">Signed cryptographic audit trail</p>
+                </div>
+            </div>
+
+            <div class="panel-content-scroll">
+                
+                <!-- Human Audit Action Buttons (Primary Addition) -->
+                <div class="results-card audit-action-console">
+                    <h3 class="card-section-title">Officer Verification Review</h3>
+                    <div class="audit-buttons-row">
+                        <button id="btn-audit-approve" class="btn-audit approve">Approve & Sign Challan</button>
+                        <button id="btn-audit-reject" class="btn-audit reject">Flag False Positive (Reject)</button>
+                    </div>
+                    <p class="audit-guide-text">Verify bounding boxes and license plates against image visual context before signing.</p>
+                </div>
+
+                <!-- Status Badge Panel -->
+                <div class="status-summary-card" id="summary-card">
+                    <div class="status-row">
+                        <span class="status-card-label">Violation Status:</span>
+                        <span id="violation-status-badge" class="badge-status violation">VIOLATION CAPTURED</span>
+                    </div>
+                    <div class="status-row">
+                        <span class="status-card-label">Type:</span>
+                        <span id="violation-type-val" class="status-card-val">Helmet Non-compliance</span>
+                    </div>
+                </div>
+
+                <!-- Analysis Panel -->
+                <div class="results-card" id="results-panel">
+                    <h3 class="card-section-title">AI Natural Language Summary</h3>
+                    <p id="vlm-explanation" class="explanation-text">
+                        Detected motorcycle with two occupants. Neither rider nor passenger is wearing a safety helmet. Violation verified.
+                    </p>
+                </div>
+
+                <!-- License Plate OCR Card -->
+                <div class="results-card" id="ocr-card">
+                    <h3 class="card-section-title">License Plate Recognition (ANPR OCR)</h3>
+                    <div class="ocr-display-box">
+                        <div class="ocr-plate-holder">
+                            <div class="ocr-plate-badge"><div class="hsrp-chakra"></div><span class="hsrp-text">IND</span></div>
+                            <span id="ocr-plate-number" class="ocr-plate-text">DL 3C AM 8291</span>
+                        </div>
+                        <div class="ocr-confidence-gauge">
+                            <span class="gauge-label">Confidence:</span>
+                            <div class="gauge-bar-wrapper">
+                                <div id="ocr-confidence-fill" class="gauge-bar-fill" style="width: 97%;"></div>
+                            </div>
+                            <span id="ocr-confidence-val" class="gauge-val">97%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Preprocessing Pipeline Details -->
+                <div class="results-card" id="preprocessing-card">
+                    <h3 class="card-section-title">Hardware Image Pre-processing</h3>
+                    <div class="preprocessing-logs">
+                        <div class="log-entry">
+                            <span class="log-bullet">⚡</span>
+                            <span class="log-label">Operation:</span>
+                            <span id="preprocessing-log-op" class="log-value">Low-Light Enhancement & Contrast Equalization</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-bullet">⚡</span>
+                            <span class="log-label">Filters Applied:</span>
+                            <span class="log-value">Gamma 1.8, CLAHE Equalizer, De-noise</span>
+                        </div>
+                        <div class="log-entry">
+                            <span class="log-bullet">⚡</span>
+                            <span class="log-label">Hardware Acceleration:</span>
+                            <span class="log-value text-success">CUDA ON (RTX 4090)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Evidence Locker Block -->
+                <div class="evidence-locker-cert" id="hash-container">
+                    <div class="cert-header">
+                        <span class="cert-badge" id="cert-lock-title"><span class="material-icons cert-badge-icon">security</span> COURT EVIDENCE SECURED</span>
+                        <div class="cert-seal" id="cert-lock-seal">Locked</div>
+                    </div>
+                    <div class="cert-body">
+                        <p class="cert-desc" id="cert-lock-desc">This image and inference metadata have been signed using HMAC SHA-256 for judicial authenticity.</p>
+                        
+                        <div class="cert-hash-block">
+                            <span class="hash-title">SHA-256 Checksum:</span>
+                            <div id="evidence-hash" class="hash-code">a5c1e89b4f2c00c732891fde98cc34821a00fe432bc8d91a0b382ef910a39d52</div>
+                        </div>
+
+                        <div class="cert-meta-grid">
+                            <div>
+                                <span class="meta-label">Node Integrity:</span>
+                                <span class="meta-val text-success">VERIFIED</span>
+                            </div>
+                            <div>
+                                <span class="meta-label">Signed By:</span>
+                                <span class="meta-val">SentinelGate v3.5</span>
+                            </div>
+                        </div>
+
+                        <button id="btn-export-pkg" class="btn-secondary-glow">📥 Export signed court dossier (.json)</button>
+                    </div>
+                </div>
+
+                <!-- Dummy Stats -->
+                <div class="results-card stat-card" style="margin-top: 16px;">
+                    <h3 class="card-section-title">Today's Session Stats</h3>
+                    <div class="stats-row-grid">
+                        <div class="stat-item">
+                            <span class="stat-lbl">Violations</span>
+                            <span class="stat-num text-danger">42</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-lbl">OCR Accuracy</span>
+                            <span class="stat-num text-success">96.8%</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-lbl">Processing Time</span>
+                            <span class="stat-num text-accent">1.2s</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js"></script>
+</body>
+</html>
