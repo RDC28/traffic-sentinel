@@ -80,6 +80,11 @@ python -m http.server 3002
 
 ## Contributors
 This project is developed and maintained by:
-- **rdc28**
-- **sakshikolhal**
-- **rane05**
+
+<a href="https://github.com/rdc28"><img src="https://github.com/rdc28.png" width="50" height="50" alt="rdc28" style="border-radius: 50%; margin: 5px;"></a>
+<a href="https://github.com/sakshikolhal"><img src="https://github.com/sakshikolhal.png" width="50" height="50" alt="sakshikolhal" style="border-radius: 50%; margin: 5px;"></a>
+<a href="https://github.com/rane05"><img src="https://github.com/rane05.png" width="50" height="50" alt="rane05" style="border-radius: 50%; margin: 5px;"></a>
+
+- **rdc28** (https://github.com/rdc28)
+- **sakshikolhal** (https://github.com/sakshikolhal)
+- **rane05** (https://github.com/rane05)
