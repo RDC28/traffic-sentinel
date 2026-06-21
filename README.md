@@ -88,3 +88,8 @@ This project is developed and maintained by:
 - **rdc28** (https://github.com/rdc28)
 - **sakshikolhal** (https://github.com/sakshikolhal)
 - **rane05** (https://github.com/rane05)
+
+---
+
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
